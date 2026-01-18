@@ -3,29 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>哈利波特分院帽测试器</title>
+    <title>霍格沃茨分院帽测试</title>
     <style>
         /* 全局样式 */
         body {
             font-family: 'Georgia', serif;
             margin: 0;
             padding: 0;
-            background-color: #1a1a2e;
-            background-image: url('https://images.unsplash.com/photo-1517423440428-a5a00ad493e8?auto=format&fit=crop&q=80&w=1920&ixlib=rb-4.0.3');
+            background: linear-gradient(135deg, #6b0f1a 0%, #5a189a 50%, #240046 100%);
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
             color: #f0f0f0;
+            position: relative;
+            overflow-x: hidden;
         }
         
-        /* 遮罩层 */
-        .overlay {
+        /* 星星背景 */
+        body::before {
+            content: '';
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(26, 26, 46, 0.85);
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #fff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 40px 70px, #fff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 90px 40px, #fff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 130px 80px, #fff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 160px 120px, #fff, rgba(0,0,0,0));
+            background-repeat: repeat;
+            background-size: 200px 200px;
+            opacity: 0.3;
             z-index: -1;
         }
         
@@ -34,87 +44,177 @@
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
+            text-align: center;
         }
         
         /* 标题样式 */
         h1 {
             text-align: center;
-            color: #d4af37;
-            font-size: 2.5em;
-            margin-bottom: 10px;
+            color: #ffd700;
+            font-size: 2.8em;
+            margin-bottom: 5px;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-            letter-spacing: 2px;
+            letter-spacing: 3px;
+            font-weight: bold;
         }
         
         h2 {
             text-align: center;
             color: #f0f0f0;
-            font-size: 1.2em;
-            margin-bottom: 30px;
+            font-size: 1.3em;
+            margin-bottom: 20px;
             font-weight: normal;
         }
         
         /* 帽子图片 */
         .hat-container {
             text-align: center;
-            margin: 30px 0;
+            margin: 40px 0;
         }
         
         #sortingHat {
-            width: 200px;
-            height: auto;
-            transition: transform 0.3s ease;
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            border: 4px solid #ffd700;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.5), 0 0 60px rgba(255, 215, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: linear-gradient(135deg, rgba(90, 24, 154, 0.8) 0%, rgba(36, 0, 70, 0.8) 100%);
+            padding: 15px;
         }
         
         #sortingHat:hover {
             transform: scale(1.05);
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.7), 0 0 80px rgba(255, 215, 0, 0.5);
+        }
+        
+        /* 引导文字 */
+        .intro-text {
+            font-size: 1.1em;
+            color: #e0e0e0;
+            margin-bottom: 40px;
+            line-height: 1.6;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
         }
         
         /* 问题区域 */
         .question-area {
-            background-color: rgba(255, 255, 255, 0.1);
-            border: 2px solid #d4af37;
-            border-radius: 10px;
-            padding: 25px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+            border: 2px solid #ffd700;
+            border-radius: 15px;
+            padding: 30px;
             margin-bottom: 30px;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
         }
         
         #questionText {
-            font-size: 1.3em;
-            margin-bottom: 25px;
+            font-size: 1.4em;
+            margin-bottom: 30px;
             text-align: center;
-            color: #f0f0f0;
+            color: #ffd700;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
         }
         
         /* 选项区域 */
         .options-area {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: 1fr 1fr;
             gap: 15px;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
         
-        .option-btn {
-            padding: 15px 20px;
-            background-color: rgba(255, 255, 255, 0.15);
-            border: 2px solid #d4af37;
-            border-radius: 8px;
-            color: #f0f0f0;
-            font-size: 1em;
+        /* 选项容器 */
+        .option-container {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 215, 0, 0.5);
+            border-radius: 10px;
+            padding: 18px 25px;
             cursor: pointer;
             transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+        
+        /* 选中状态的选项 */
+        .option-container.selected {
+            background: rgba(255, 215, 0, 0.2);
+            border-color: #ffd700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        }
+        
+        .option-container:hover {
+            background: rgba(255, 215, 0, 0.15);
+            border-color: rgba(255, 215, 0, 0.8);
+            transform: translateY(-2px);
+        }
+        
+        /* 自定义单选按钮 */
+        .option-radio {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 215, 0, 0.7);
+            border-radius: 50%;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        /* 选中的单选按钮 */
+        .option-container.selected .option-radio::after {
+            content: '';
+            width: 12px;
+            height: 12px;
+            background: #ffd700;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+        }
+        
+        /* 选项文本 */
+        .option-text {
+            font-size: 1.1em;
+            color: #f0f0f0;
             font-family: 'Georgia', serif;
         }
         
-        .option-btn:hover {
-            background-color: rgba(212, 175, 55, 0.3);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        /* 选中的选项文本 */
+        .option-container.selected .option-text {
+            color: #ffd700;
         }
         
-        .option-btn:active {
-            transform: translateY(0);
+        /* 下一题按钮 */
+        #nextBtn {
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            color: #240046;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Georgia', serif;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+            margin-top: 10px;
+        }
+        
+        #nextBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6);
+        }
+        
+        /* 禁用状态的下一题按钮 */
+        #nextBtn:disabled {
+            background: rgba(255, 215, 0, 0.3);
+            color: rgba(36, 0, 70, 0.5);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
         
         /* 进度区域 */
@@ -124,22 +224,25 @@
         }
         
         #progressText {
-            font-size: 1.1em;
-            color: #d4af37;
-            margin-bottom: 10px;
+            font-size: 1.2em;
+            color: #ffd700;
+            margin-bottom: 15px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
         }
         
         .progress-bar {
             width: 100%;
-            height: 10px;
+            height: 12px;
             background-color: rgba(255, 255, 255, 0.2);
-            border-radius: 5px;
+            border-radius: 10px;
             overflow: hidden;
+            border: 1px solid rgba(255, 215, 0, 0.5);
         }
         
         #progressFill {
             height: 100%;
-            background-color: #d4af37;
+            background: linear-gradient(90deg, #ffd700, #ffed4e);
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
             width: 0%;
             transition: width 0.5s ease;
         }
@@ -147,65 +250,91 @@
         /* 结果区域 */
         .result-area {
             display: none;
-            background-color: rgba(255, 255, 255, 0.1);
-            border: 2px solid #d4af37;
-            border-radius: 10px;
-            padding: 30px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+            border: 2px solid #ffd700;
+            border-radius: 15px;
+            padding: 40px;
             text-align: center;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            margin-top: 40px;
+        }
+        
+        .result-area h2 {
+            color: #ffd700;
+            font-size: 1.8em;
+            margin-bottom: 30px;
         }
         
         #houseResult {
-            font-size: 2em;
+            font-size: 2.5em;
             font-weight: bold;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
         
         #houseDescription {
-            font-size: 1.2em;
-            margin-bottom: 30px;
-            line-height: 1.5;
+            font-size: 1.3em;
+            margin-bottom: 35px;
+            line-height: 1.6;
+            color: #e0e0e0;
         }
         
         /* 重新测试按钮 */
         #restartBtn {
-            padding: 15px 30px;
-            background-color: #d4af37;
-            color: #1a1a2e;
+            padding: 18px 35px;
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            color: #240046;
             border: none;
-            border-radius: 8px;
-            font-size: 1.1em;
+            border-radius: 50px;
+            font-size: 1.2em;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
             font-family: 'Georgia', serif;
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         
         #restartBtn:hover {
-            background-color: #f0c14b;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.6);
+        }
+        
+        #restartBtn:active {
+            transform: translateY(-1px);
         }
         
         /* 学院颜色 */
         .gryffindor {
             color: #ae0001;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3), 0 0 20px rgba(174, 0, 26, 0.5);
         }
         
         .hufflepuff {
             color: #ffdb00;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3), 0 0 20px rgba(255, 219, 0, 0.5);
         }
         
         .ravenclaw {
             color: #000080;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3), 0 0 20px rgba(0, 0, 128, 0.5);
         }
         
         .slytherin {
             color: #2a623d;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3), 0 0 20px rgba(42, 98, 61, 0.5);
+        }
+        
+        /* 欢迎文字 */
+        .welcome-text {
+            font-size: 1.2em;
+            color: #e0e0e0;
+            margin: 30px 0;
+            line-height: 1.6;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
         }
         
         /* 响应式设计 */
@@ -215,27 +344,37 @@
             }
             
             h1 {
-                font-size: 2em;
+                font-size: 2.2em;
+            }
+            
+            #sortingHat {
+                width: 180px;
+                height: 180px;
             }
             
             .options-area {
                 grid-template-columns: 1fr;
+                gap: 15px;
             }
             
-            #sortingHat {
-                width: 150px;
+            .question-area,
+            .result-area {
+                padding: 25px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="overlay"></div>
     <div class="container">
-        <h1>哈利波特分院帽测试器</h1>
-        <h2>回答以下问题，分院帽将为你分配最适合的霍格沃茨学院</h2>
+        <h1>霍格沃茨</h1>
+        <h2>分院帽测试</h2>
+        
+        <div class="welcome-text">
+            踏上魔法之旅，发现你真正的归属。分院帽将根据你的性格特质，为你选择最适合的霍格沃茨学院。
+        </div>
         
         <div class="hat-container">
-            <img id="sortingHat" src="https://www.pngplay.com/wp-content/uploads/5/Harry-Potter-Sorting-Hat-PNG-Free-Download.png" alt="分院帽">
+            <img id="sortingHat" src="https://www.pngplay.com/wp-content/uploads/5/Harry-Potter-Sorting-Hat-PNG-Picture.png" alt="分院帽">
         </div>
         
         <div class="progress-area">
@@ -396,18 +535,64 @@
             // 清空选项
             optionsContainer.innerHTML = '';
             
-            // 创建选项按钮
+            // 创建选项容器
+            let selectedOption = null;
+            
+            // 创建下一题按钮
+            const nextBtn = document.createElement('button');
+            nextBtn.id = 'nextBtn';
+            nextBtn.textContent = '下一题';
+            nextBtn.disabled = true;
+            nextBtn.onclick = () => {
+                if (selectedOption) {
+                    processOption(selectedOption);
+                }
+            };
+            
+            // 创建选项
             question.options.forEach((option, index) => {
-                const button = document.createElement('button');
-                button.className = 'option-btn';
-                button.textContent = option.text;
-                button.onclick = () => selectOption(option);
-                optionsContainer.appendChild(button);
+                // 创建选项容器
+                const optionContainer = document.createElement('div');
+                optionContainer.className = 'option-container';
+                
+                // 创建单选按钮
+                const radio = document.createElement('div');
+                radio.className = 'option-radio';
+                
+                // 创建选项文本
+                const text = document.createElement('div');
+                text.className = 'option-text';
+                text.textContent = option.text;
+                
+                // 组装选项
+                optionContainer.appendChild(radio);
+                optionContainer.appendChild(text);
+                
+                // 添加点击事件
+                optionContainer.onclick = () => {
+                    // 移除其他选项的选中状态
+                    document.querySelectorAll('.option-container').forEach(container => {
+                        container.classList.remove('selected');
+                    });
+                    
+                    // 添加当前选项的选中状态
+                    optionContainer.classList.add('selected');
+                    selectedOption = option;
+                    
+                    // 启用下一题按钮
+                    nextBtn.disabled = false;
+                };
+                
+                // 添加到选项容器
+                optionsContainer.appendChild(optionContainer);
             });
+            
+            // 添加下一题按钮
+            optionsContainer.appendChild(nextBtn);
         }
         
-        // 选择选项
-        function selectOption(option) {
+        // 处理选项选择
+        function processOption(option) {
             // 更新分数
             Object.keys(option.points).forEach(house => {
                 scores[house] += option.points[house];

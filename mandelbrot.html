@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P5.js 分形图 - 曼德博集合</title>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            text-align: center;
+        }
+        canvas {
+            border: 2px solid #333;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .controls {
+            margin-top: 10px;
+        }
+        button {
+            padding: 8px 16px;
+            margin: 0 5px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>P5.js 分形图 - 曼德博集合</h1>
+        <div class="controls">
+            <button onclick="resetZoom()">重置缩放</button>
+            <button onclick="increaseIterations()">增加迭代次数</button>
+        </div>
+        <script>
+            // 曼德博集合参数
+            let maxIterations = 100; // 最大迭代次数
+            let zoom = 1; // 缩放级别
+            let offsetX = 0; // x轴偏移
+            let offsetY = 0; // y轴偏移
+            
+            function setup() {
+                createCanvas(800, 600);
+                pixelDensity(1);
+            }
+            
+            function draw() {
+                background(0);
+                
+                loadPixels();
+                
+                // 遍历画布上的每个像素
+                for (let x = 0; x < width; x++) {
+                    for (let y = 0; y < height; y++) {
+                        // 将像素坐标映射到复平面
+                        let a = map(x, 0, width, -2.5 / zoom + offsetX, 1.5 / zoom + offsetX);
+                        let b = map(y, 0, height, -1.5 / zoom + offsetY, 1.5 / zoom + offsetY);
+                        
+                        let ca = a;
+                        let cb = b;
+                        
+                        let n = 0; // 迭代次数
+                        
+                        // 曼德博集合迭代公式：z = z² + c
+                        while (n < maxIterations) {
+                            let aa = a * a - b * b; // 实部
+                            let bb = 2 * a * b; // 虚部
+                            
+                            a = aa + ca;
+                            b = bb + cb;
+                            
+                            // 检查是否逃逸到无穷大
+                            if (a * a + b * b > 4) {
+                                break;
+                            }
+                            
+                            n++;
+                        }
+                        
+                        // 根据迭代次数计算颜色
+                        let brightness = map(n, 0, maxIterations, 0, 255);
+                        
+                        if (n === maxIterations) {
+                            brightness = 0; // 在集合内的点设为黑色
+                        } else {
+                            // 使用平滑的颜色过渡
+                            brightness = map(sqrt(n / maxIterations), 0, 1, 0, 255);
+                        }
+                        
+                        // 创建彩色效果
+                        let r = map(sin(n * 0.1), -1, 1, 0, 255);
+                        let g = map(sin(n * 0.1 + 2), -1, 1, 0, 255);
+                        let bColor = map(sin(n * 0.1 + 4), -1, 1, 0, 255);
+                        
+                        // 设置像素颜色
+                        let pix = (x + y * width) * 4;
+                        pixels[pix + 0] = r;
+                        pixels[pix + 1] = g;
+                        pixels[pix + 2] = bColor;
+                        pixels[pix + 3] = 255;
+                    }
+                }
+                
+                updatePixels();
+            }
+            
+            // 鼠标点击缩放功能
+            function mousePressed() {
+                // 计算鼠标在复平面上的位置
+                let mouseA = map(mouseX, 0, width, -2.5 / zoom + offsetX, 1.5 / zoom + offsetX);
+                let mouseB = map(mouseY, 0, height, -1.5 / zoom + offsetY, 1.5 / zoom + offsetY);
+                
+                // 放大2倍
+                zoom *= 2;
+                
+                // 更新偏移量，使鼠标位置保持在中心
+                offsetX = mouseA - (1.5 / zoom - (-2.5 / zoom)) / 2;
+                offsetY = mouseB - (1.5 / zoom - (-1.5 / zoom)) / 2;
+            }
+            
+            // 重置缩放
+            function resetZoom() {
+                zoom = 1;
+                offsetX = 0;
+                offsetY = 0;
+            }
+            
+            // 增加迭代次数
+            function increaseIterations() {
+                maxIterations += 50;
+                if (maxIterations > 500) {
+                    maxIterations = 100;
+                }
+            }
+        </script>
+    </div>
+</body>
+</html>

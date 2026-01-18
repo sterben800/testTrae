@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图片文字识别工具</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .upload-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .file-upload {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px;
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            max-width: 500px;
+        }
+        .file-upload:hover {
+            border-color: #4CAF50;
+            background-color: #f9f9f9;
+        }
+        .file-upload input[type="file"] {
+            display: none;
+        }
+        .file-upload label {
+            cursor: pointer;
+            color: #4CAF50;
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .file-upload p {
+            color: #666;
+            margin: 0;
+        }
+        .preview-section {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .preview-section h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        #imagePreview {
+            max-width: 100%;
+            max-height: 400px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .result-section {
+            margin-bottom: 30px;
+        }
+        .result-section h2 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        #ocrResult {
+            width: 100%;
+            height: 300px;
+            padding: 15px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            resize: vertical;
+            font-family: Arial, sans-serif;
+        }
+        .status-section {
+            text-align: center;
+            padding: 20px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+        }
+        .status-section p {
+            margin: 0;
+            font-size: 16px;
+            color: #666;
+        }
+        .status-section .loading {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>图片文字识别工具</h1>
+        
+        <div class="upload-section">
+            <div class="file-upload">
+                <input type="file" id="imageUpload" accept="image/*">
+                <label for="imageUpload">点击选择图片</label>
+                <p id="fileName">未选择图片</p>
+            </div>
+        </div>
+        
+        <div class="preview-section">
+            <h2>图片预览</h2>
+            <img id="imagePreview" src="" alt="图片预览" style="display: none;">
+        </div>
+        
+        <div class="result-section">
+            <h2>识别结果</h2>
+            <textarea id="ocrResult" placeholder="识别结果将显示在这里..." readonly></textarea>
+        </div>
+        
+        <div class="status-section">
+            <p id="status">请上传一张包含文字的图片</p>
+            <button id="retryBtn" style="display: none; margin-top: 15px; padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">重试识别</button>
+        </div>
+    </div>
+    
+    <!-- 引入Tesseract.js库 -->
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+    
+    <script>
+        // 全局变量
+        let uploadedImage = null;
+        let currentImageData = null;
+        
+        // 页面加载完成后检查Tesseract.js是否加载成功
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof Tesseract !== 'undefined') {
+                console.log('Tesseract.js库加载成功');
+            } else {
+                console.error('Tesseract.js库加载失败');
+                document.getElementById('status').innerHTML = 'Tesseract.js库加载失败，请刷新页面重试';
+            }
+        });
+        
+        // 处理图片上传
+        document.getElementById('imageUpload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                document.getElementById('fileName').textContent = file.name;
+                
+                // 显示图片预览
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const preview = document.getElementById('imagePreview');
+                    preview.src = event.target.result;
+                    preview.style.display = 'block';
+                    
+                    // 存储当前图片数据，用于重试功能
+                    currentImageData = event.target.result;
+                    
+                    // 开始OCR识别
+                    recognizeText(currentImageData);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        // 使用Tesseract.js进行OCR识别
+        function recognizeText(imageData) {
+            const status = document.getElementById('status');
+            const result = document.getElementById('ocrResult');
+            const retryBtn = document.getElementById('retryBtn');
+            
+            // 清空之前的结果
+            result.value = '';
+            
+            // 隐藏重试按钮
+            retryBtn.style.display = 'none';
+            
+            // 显示识别中状态
+            status.innerHTML = '<span class="loading">正在识别中...</span>';
+            
+            // 配置Tesseract.js，禁用本地存储但使用默认CDN加载语言模型
+            const config = {
+                logger: info => {
+                    // 更新识别状态
+                    status.innerHTML = `<span class="loading">识别中: ${info.status} (${Math.round(info.progress * 100)}%)</span>`;
+                },
+                cacheMethod: 'none' // 禁用本地存储缓存，解决跟踪保护问题
+                // 使用Tesseract.js默认的CDN源加载所有必要文件
+            };
+            
+            // 使用Tesseract.js进行识别
+            Tesseract.recognize(
+                imageData,     // 图片数据
+                'chi_sim+eng', // 识别语言：中文简体+英文
+                config
+            ).then(({ data }) => {
+                // 识别完成，显示结果
+                console.log('识别结果数据:', data);
+                if (data && data.text) {
+                    result.value = data.text;
+                    status.innerHTML = '识别完成';
+                    
+                    // 如果结果为空，显示提示信息
+                    if (data.text.trim() === '') {
+                        status.innerHTML = '识别完成，但未检测到文字';
+                    }
+                } else {
+                    result.value = '识别结果为空';
+                    status.innerHTML = '识别完成，但未获取到有效结果';
+                }
+                
+                // 隐藏重试按钮
+                retryBtn.style.display = 'none';
+            }).catch(err => {
+                // 处理错误
+                console.error('识别出错:', err);
+                status.innerHTML = `识别出错: ${err.message}`;
+                
+                // 显示详细错误信息到控制台
+                console.error('详细错误:', err);
+                
+                // 显示重试按钮
+                retryBtn.style.display = 'block';
+            });
+        }
+        
+        // 重试识别功能
+        function retryRecognize() {
+            if (currentImageData) {
+                recognizeText(currentImageData);
+            }
+        }
+        
+        // 为重试按钮添加点击事件
+        document.getElementById('retryBtn').addEventListener('click', retryRecognize);
+    </script>
+</body>
+</html>

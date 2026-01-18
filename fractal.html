@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P5.js 分形图 - 科赫曲线</title>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            text-align: center;
+        }
+        canvas {
+            border: 2px solid #333;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>P5.js 分形图 - 科赫曲线</h1>
+        <script>
+            // 科赫曲线分形实现
+            let iterations = 4; // 递归迭代次数
+            
+            function setup() {
+                createCanvas(800, 400);
+                colorMode(HSB, 360, 100, 100); // 启用HSL颜色模式
+                strokeWeight(2);
+                noFill();
+            }
+            
+            function draw() {
+                // 创建彩色渐变背景
+                for (let i = 0; i < height; i++) {
+                    let hue = map(i, 0, height, 200, 260); // 蓝紫色渐变
+                    let saturation = map(i, 0, height, 20, 50);
+                    let lightness = map(i, 0, height, 85, 95);
+                    stroke(hue, saturation, lightness);
+                    line(0, i, width, i);
+                }
+                
+                // 设置起始点和终点
+                let x1 = 100;
+                let y1 = 300;
+                let x2 = 700;
+                let y2 = 300;
+                
+                // 绘制科赫曲线
+                koch(x1, y1, x2, y2, iterations);
+                
+                // 绘制科赫雪花（可选）
+                // 科赫雪花由三个科赫曲线组成，形成三角形
+                let size = 400;
+                let centerX = width / 2;
+                let centerY = height / 2;
+                
+                // 计算三角形的三个顶点
+                let x3 = centerX;
+                let y3 = centerY - size / sqrt(3);
+                let x4 = centerX - size / 2;
+                let y4 = centerY + size / (2 * sqrt(3));
+                let x5 = centerX + size / 2;
+                let y5 = centerY + size / (2 * sqrt(3));
+                
+                // 绘制三个科赫曲线组成雪花
+                koch(x3, y3, x4, y4, iterations);
+                koch(x4, y4, x5, y5, iterations);
+                koch(x5, y5, x3, y3, iterations);
+            }
+            
+            // 科赫曲线递归函数
+            function koch(x1, y1, x2, y2, depth) {
+                if (depth === 0) {
+                    // 基础情况：绘制直线
+                    line(x1, y1, x2, y2);
+                } else {
+                    // 根据深度设置颜色，使用彩虹色渐变
+                    let hue = map(depth, 0, iterations, 0, 360);
+                    let saturation = 80;
+                    let lightness = map(depth, 0, iterations, 40, 70); // 不同深度有不同亮度
+                    stroke(hue, saturation, lightness);
+                    
+                    // 计算线段长度
+                    let dx = x2 - x1;
+                    let dy = y2 - y1;
+                    let length = sqrt(dx * dx + dy * dy);
+                    
+                    // 计算中间点
+                    let xA = x1 + dx / 3;
+                    let yA = y1 + dy / 3;
+                    
+                    let xC = x1 + (2 * dx) / 3;
+                    let yC = y1 + (2 * dy) / 3;
+                    
+                    // 计算凸起的点B，形成等边三角形
+                    let angle = atan2(dy, dx) - PI / 3;
+                    let xB = xA + (length / 3) * cos(angle);
+                    let yB = yA + (length / 3) * sin(angle);
+                    
+                    // 递归绘制四个线段
+                    koch(x1, y1, xA, yA, depth - 1);
+                    koch(xA, yA, xB, yB, depth - 1);
+                    koch(xB, yB, xC, yC, depth - 1);
+                    koch(xC, yC, x2, y2, depth - 1);
+                }
+            }
+            
+            // 鼠标点击增加迭代次数
+            function mousePressed() {
+                iterations = (iterations + 1) % 6; // 限制在0-5次迭代
+            }
+        </script>
+    </div>
+</body>
+</html>

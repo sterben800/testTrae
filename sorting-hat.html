@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>哈利波特分院帽测试器</title>
+    <style>
+        /* 全局样式 */
+        body {
+            font-family: 'Georgia', serif;
+            margin: 0;
+            padding: 0;
+            background-color: #1a1a2e;
+            background-image: url('https://images.unsplash.com/photo-1517423440428-a5a00ad493e8?auto=format&fit=crop&q=80&w=1920&ixlib=rb-4.0.3');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #f0f0f0;
+        }
+        
+        /* 遮罩层 */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(26, 26, 46, 0.85);
+            z-index: -1;
+        }
+        
+        /* 容器 */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* 标题样式 */
+        h1 {
+            text-align: center;
+            color: #d4af37;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            letter-spacing: 2px;
+        }
+        
+        h2 {
+            text-align: center;
+            color: #f0f0f0;
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            font-weight: normal;
+        }
+        
+        /* 帽子图片 */
+        .hat-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        #sortingHat {
+            width: 200px;
+            height: auto;
+            transition: transform 0.3s ease;
+        }
+        
+        #sortingHat:hover {
+            transform: scale(1.05);
+        }
+        
+        /* 问题区域 */
+        .question-area {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 2px solid #d4af37;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+        
+        #questionText {
+            font-size: 1.3em;
+            margin-bottom: 25px;
+            text-align: center;
+            color: #f0f0f0;
+        }
+        
+        /* 选项区域 */
+        .options-area {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .option-btn {
+            padding: 15px 20px;
+            background-color: rgba(255, 255, 255, 0.15);
+            border: 2px solid #d4af37;
+            border-radius: 8px;
+            color: #f0f0f0;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Georgia', serif;
+        }
+        
+        .option-btn:hover {
+            background-color: rgba(212, 175, 55, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .option-btn:active {
+            transform: translateY(0);
+        }
+        
+        /* 进度区域 */
+        .progress-area {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        #progressText {
+            font-size: 1.1em;
+            color: #d4af37;
+            margin-bottom: 10px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        #progressFill {
+            height: 100%;
+            background-color: #d4af37;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        /* 结果区域 */
+        .result-area {
+            display: none;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 2px solid #d4af37;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+        
+        #houseResult {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        
+        #houseDescription {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+        
+        /* 重新测试按钮 */
+        #restartBtn {
+            padding: 15px 30px;
+            background-color: #d4af37;
+            color: #1a1a2e;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Georgia', serif;
+        }
+        
+        #restartBtn:hover {
+            background-color: #f0c14b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* 学院颜色 */
+        .gryffindor {
+            color: #ae0001;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .hufflepuff {
+            color: #ffdb00;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .ravenclaw {
+            color: #000080;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .slytherin {
+            color: #2a623d;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .options-area {
+                grid-template-columns: 1fr;
+            }
+            
+            #sortingHat {
+                width: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div>
+    <div class="container">
+        <h1>哈利波特分院帽测试器</h1>
+        <h2>回答以下问题，分院帽将为你分配最适合的霍格沃茨学院</h2>
+        
+        <div class="hat-container">
+            <img id="sortingHat" src="https://www.pngplay.com/wp-content/uploads/5/Harry-Potter-Sorting-Hat-PNG-Free-Download.png" alt="分院帽">
+        </div>
+        
+        <div class="progress-area">
+            <div id="progressText">问题 1 / 10</div>
+            <div class="progress-bar">
+                <div id="progressFill"></div>
+            </div>
+        </div>
+        
+        <div class="question-area">
+            <div id="questionText">你的冒险即将开始...</div>
+            <div class="options-area" id="optionsContainer"></div>
+        </div>
+        
+        <div class="result-area" id="resultArea">
+            <h2>分院结果</h2>
+            <div id="houseResult">格兰芬多</div>
+            <div id="houseDescription">勇敢、坚毅、无畏的格兰芬多欢迎你！</div>
+            <button id="restartBtn">重新测试</button>
+        </div>
+    </div>
+    
+    <script>
+        // 问题数据
+        const questions = [
+            {
+                question: "你最看重的品质是什么？",
+                options: [
+                    { text: "勇敢", points: { gryffindor: 3, hufflepuff: 1, ravenclaw: 1, slytherin: 0 } },
+                    { text: "智慧", points: { gryffindor: 1, hufflepuff: 0, ravenclaw: 3, slytherin: 1 } },
+                    { text: "忠诚", points: { gryffindor: 0, hufflepuff: 3, ravenclaw: 1, slytherin: 1 } },
+                    { text: "野心", points: { gryffindor: 0, hufflepuff: 0, ravenclaw: 1, slytherin: 3 } }
+                ]
+            },
+            {
+                question: "你会选择哪种宠物？",
+                options: [
+                    { text: "猫头鹰", points: { gryffindor: 1, hufflepuff: 1, ravenclaw: 3, slytherin: 1 } },
+                    { text: "猫", points: { gryffindor: 2, hufflepuff: 1, ravenclaw: 2, slytherin: 2 } },
+                    { text: "蟾蜍", points: { gryffindor: 0, hufflepuff: 3, ravenclaw: 1, slytherin: 0 } },
+                    { text: "蛇", points: { gryffindor: 0, hufflepuff: 0, ravenclaw: 0, slytherin: 3 } }
+                ]
+            },
+            {
+                question: "你最害怕什么？",
+                options: [
+                    { text: "失败", points: { gryffindor: 1, hufflepuff: 1, ravenclaw: 1, slytherin: 3 } },
+                    { text: "孤独", points: { gryffindor: 1, hufflepuff: 3, ravenclaw: 1, slytherin: 1 } },
+                    { text: "无知", points: { gryffindor: 0, hufflepuff: 1, ravenclaw: 3, slytherin: 1 } },
+                    { text: "恐惧本身", points: { gryffindor: 3, hufflepuff: 1, ravenclaw: 1, slytherin: 1 } }
+                ]
+            },
+            {
+                question: "你会选择哪个魔法物品？",
+                options: [
+                    { text: "隐形斗篷", points: { gryffindor: 2, hufflepuff: 1, ravenclaw: 2, slytherin: 2 } },
+                    { text: "复活石", points: { gryffindor: 1, hufflepuff: 3, ravenclaw: 1, slytherin: 1 } },
+                    { text: "老魔杖", points: { gryffindor: 2, hufflepuff: 0, ravenclaw: 1, slytherin: 3 } },
+                    { text: "时间转换器", points: { gryffindor: 1, hufflepuff: 1, ravenclaw: 3, slytherin: 1 } }
+                ]
+            },
+            {
+                question: "你更喜欢哪种天气？",
+                options: [
+                    { text: "晴天", points: { gryffindor: 3, hufflepuff: 3, ravenclaw: 1, slytherin: 0 } },
+                    { text: "雨天", points: { gryffindor: 1, hufflepuff: 1, ravenclaw: 3, slytherin: 2 } },
+                    { text: "雪天", points: { gryffindor: 2, hufflepuff: 2, ravenclaw: 2, slytherin: 1 } },
+                    { text: "多云", points: { gryffindor: 1, hufflepuff: 2, ravenclaw: 1, slytherin: 3 } }
+                ]
+            },
+            {
+                question: "你会如何面对挑战？",
+                options: [
+                    { text: "直接冲上去", points: { gryffindor: 3, hufflepuff: 1, ravenclaw: 1, slytherin: 1 } },
+                    { text: "制定计划", points: { gryffindor: 1, hufflepuff: 1, ravenclaw: 3, slytherin: 2 } },
+                    { text: "寻求帮助", points: { gryffindor: 1, hufflepuff: 3, ravenclaw: 1, slytherin: 0 } },
+                    { text: "利用资源", points: { gryffindor: 0, hufflepuff: 1, ravenclaw: 2, slytherin: 3 } }
+                ]
+            },
+            {
+                question: "你最想去霍格沃茨的哪个地方？",
+                options: [
+                    { text: "魁地奇球场", points: { gryffindor: 3, hufflepuff: 2, ravenclaw: 1, slytherin: 1 } },
+                    { text: "图书馆", points: { gryffindor: 1, hufflepuff: 1, ravenclaw: 3, slytherin: 1 } },
+                    { text: "厨房", points: { gryffindor: 1, hufflepuff: 3, ravenclaw: 1, slytherin: 0 } },
+                    { text: "斯莱特林公共休息室", points: { gryffindor: 0, hufflepuff: 0, ravenclaw: 1, slytherin: 3 } }
+                ]
+            },
+            {
+                question: "你会选择哪种课程？",
+                options: [
+                    { text: "黑魔法防御术", points: { gryffindor: 3, hufflepuff: 1, ravenclaw: 1, slytherin: 2 } },
+                    { text: "变形术", points: { gryffindor: 2, hufflepuff: 1, ravenclaw: 2, slytherin: 2 } },
+                    { text: "草药学", points: { gryffindor: 1, hufflepuff: 3, ravenclaw: 1, slytherin: 1 } },
+                    { text: "魔药学", points: { gryffindor: 0, hufflepuff: 1, ravenclaw: 2, slytherin: 3 } }
+                ]
+            },
+            {
+                question: "你会如何处理冲突？",
+                options: [
+                    { text: "挺身而出", points: { gryffindor: 3, hufflepuff: 1, ravenclaw: 0, slytherin: 1 } },
+                    { text: "调解双方", points: { gryffindor: 1, hufflepuff: 3, ravenclaw: 1, slytherin: 0 } },
+                    { text: "寻找解决方案", points: { gryffindor: 1, hufflepuff: 1, ravenclaw: 3, slytherin: 1 } },
+                    { text: "保护自己", points: { gryffindor: 0, hufflepuff: 0, ravenclaw: 1, slytherin: 3 } }
+                ]
+            },
+            {
+                question: "你希望别人如何评价你？",
+                options: [
+                    { text: "勇敢的", points: { gryffindor: 3, hufflepuff: 1, ravenclaw: 1, slytherin: 0 } },
+                    { text: "聪明的", points: { gryffindor: 1, hufflepuff: 0, ravenclaw: 3, slytherin: 1 } },
+                    { text: "善良的", points: { gryffindor: 0, hufflepuff: 3, ravenclaw: 1, slytherin: 0 } },
+                    { text: "成功的", points: { gryffindor: 1, hufflepuff: 0, ravenclaw: 1, slytherin: 3 } }
+                ]
+            }
+        ];
+        
+        // 学院描述
+        const houseDescriptions = {
+            gryffindor: "勇敢、坚毅、无畏的格兰芬多欢迎你！这里培养了许多伟大的巫师，包括哈利·波特和邓布利多校长。格兰芬多的学生总是挺身而出，为正义而战。",
+            hufflepuff: "忠诚、善良、勤奋的赫奇帕奇欢迎你！赫奇帕奇以其包容性和努力工作而闻名，这里的学生重视友谊和公平竞争。",
+            ravenclaw: "智慧、创造力、好奇心的拉文克劳欢迎你！拉文克劳的学生热爱学习，追求知识，这里培养了许多伟大的学者和发明家。",
+            slytherin: "野心、 cunning、领导力的斯莱特林欢迎你！斯莱特林的学生有强烈的目标感和决心，这里培养了许多有影响力的巫师。"
+        };
+        
+        // 全局变量
+        let currentQuestionIndex = 0;
+        let scores = { gryffindor: 0, hufflepuff: 0, ravenclaw: 0, slytherin: 0 };
+        
+        // DOM元素
+        const questionText = document.getElementById('questionText');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const progressText = document.getElementById('progressText');
+        const progressFill = document.getElementById('progressFill');
+        const resultArea = document.getElementById('resultArea');
+        const houseResult = document.getElementById('houseResult');
+        const houseDescription = document.getElementById('houseDescription');
+        const restartBtn = document.getElementById('restartBtn');
+        const sortingHat = document.getElementById('sortingHat');
+        
+        // 初始化测试
+        function initTest() {
+            currentQuestionIndex = 0;
+            scores = { gryffindor: 0, hufflepuff: 0, ravenclaw: 0, slytherin: 0 };
+            resultArea.style.display = 'none';
+            showQuestion();
+        }
+        
+        // 显示当前问题
+        function showQuestion() {
+            const question = questions[currentQuestionIndex];
+            questionText.textContent = question.question;
+            
+            // 更新进度
+            progressText.textContent = `问题 ${currentQuestionIndex + 1} / ${questions.length}`;
+            progressFill.style.width = `${((currentQuestionIndex + 1) / questions.length) * 100}%`;
+            
+            // 清空选项
+            optionsContainer.innerHTML = '';
+            
+            // 创建选项按钮
+            question.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.className = 'option-btn';
+                button.textContent = option.text;
+                button.onclick = () => selectOption(option);
+                optionsContainer.appendChild(button);
+            });
+        }
+        
+        // 选择选项
+        function selectOption(option) {
+            // 更新分数
+            Object.keys(option.points).forEach(house => {
+                scores[house] += option.points[house];
+            });
+            
+            // 下一题或显示结果
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                showQuestion();
+            } else {
+                showResult();
+            }
+        }
+        
+        // 显示结果
+        function showResult() {
+            // 计算最高分学院
+            let maxScore = 0;
+            let selectedHouse = 'gryffindor';
+            
+            Object.keys(scores).forEach(house => {
+                if (scores[house] > maxScore) {
+                    maxScore = scores[house];
+                    selectedHouse = house;
+                }
+            });
+            
+            // 显示结果
+            houseResult.textContent = getHouseName(selectedHouse);
+            houseResult.className = selectedHouse;
+            houseDescription.textContent = houseDescriptions[selectedHouse];
+            
+            // 切换显示区域
+            resultArea.style.display = 'block';
+        }
+        
+        // 获取学院中文名称
+        function getHouseName(house) {
+            const houseNames = {
+                gryffindor: "格兰芬多",
+                hufflepuff: "赫奇帕奇",
+                ravenclaw: "拉文克劳",
+                slytherin: "斯莱特林"
+            };
+            return houseNames[house] || house;
+        }
+        
+        // 事件监听器
+        restartBtn.addEventListener('click', initTest);
+        
+        // 初始化测试
+        initTest();
+    </script>
+</body>
+</html>

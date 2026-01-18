@@ -1,42 +1,95 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>霍格沃茨分院帽测试</title>
+    <title>Hogwarts Sorting Hat Test</title>
+    <!-- 引入Cinzel字体，类似电影剧照风格 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
     <style>
         /* 全局样式 */
         body {
             font-family: 'Georgia', serif;
             margin: 0;
             padding: 0;
-            background: linear-gradient(135deg, #6b0f1a 0%, #5a189a 50%, #240046 100%);
+            background: radial-gradient(ellipse at center, #0b0b2b 0%, #000000 100%);
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
             color: #f0f0f0;
             position: relative;
             overflow-x: hidden;
+            cursor: crosshair;
         }
         
-        /* 星星背景 */
-        body::before {
-            content: '';
+        /* 星空背景容器 */
+        .stars-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: 
-                radial-gradient(2px 2px at 20px 30px, #fff, rgba(0,0,0,0)),
-                radial-gradient(2px 2px at 40px 70px, #fff, rgba(0,0,0,0)),
-                radial-gradient(1px 1px at 90px 40px, #fff, rgba(0,0,0,0)),
-                radial-gradient(1px 1px at 130px 80px, #fff, rgba(0,0,0,0)),
-                radial-gradient(2px 2px at 160px 120px, #fff, rgba(0,0,0,0));
-            background-repeat: repeat;
-            background-size: 200px 200px;
-            opacity: 0.3;
             z-index: -1;
+        }
+        
+        /* 星星样式 */
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite alternate;
+        }
+        
+        /* 蓝紫色星星 */
+        .star.purple {
+            background-color: #9d4edd;
+            box-shadow: 0 0 8px #9d4edd;
+        }
+        
+        /* 星星闪烁动画 */
+        @keyframes twinkle {
+            0% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+        
+        /* 星座连线 */
+        .constellation {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        .constellation-line {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0) 100%);
+            opacity: 0.5;
+            transform-origin: left center;
+        }
+        
+        /* 鼠标跟随的星座元素 */
+        .mouse-constellation {
+            position: fixed;
+            pointer-events: none;
+            z-index: 100;
+        }
+        
+        .mouse-star {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background-color: #fff;
+            border-radius: 50%;
+            opacity: 0;
+            animation: mouseStarFade 1s ease-out forwards;
+        }
+        
+        @keyframes mouseStarFade {
+            0% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0.5); }
         }
         
         /* 容器 */
@@ -47,23 +100,38 @@
             text-align: center;
         }
         
-        /* 标题样式 */
+        /* 标题样式 - 立体浮雕效果 */
         h1 {
             text-align: center;
-            color: #ffd700;
-            font-size: 2.8em;
+            color: #8B7355;
+            font-size: 3.5em;
             margin-bottom: 5px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-            letter-spacing: 3px;
+            text-shadow: 
+                2px 2px 0px #000000, /* 主要阴影 */
+                4px 4px 0px rgba(0, 0, 0, 0.3), /* 深色阴影 */
+                0 0 20px rgba(139, 115, 85, 0.5); /* 发光效果 */
+            letter-spacing: 5px;
             font-weight: bold;
+            font-family: 'Cinzel', 'Georgia', serif;
+            text-transform: uppercase;
+            position: relative;
+            z-index: 1;
         }
         
         h2 {
             text-align: center;
             color: #f0f0f0;
-            font-size: 1.3em;
+            font-size: 1.2em;
             margin-bottom: 20px;
             font-weight: normal;
+            font-family: 'Cinzel', 'Georgia', serif;
+            letter-spacing: 2px;
+            text-shadow: 
+                1px 1px 0px #000000,
+                2px 2px 0px rgba(0, 0, 0, 0.3),
+                0 0 10px rgba(255, 255, 255, 0.5);
+            position: relative;
+            z-index: 1;
         }
         
         /* 帽子图片 */
@@ -76,16 +144,16 @@
             width: 220px;
             height: 220px;
             border-radius: 50%;
-            border: 4px solid #ffd700;
-            box-shadow: 0 0 30px rgba(255, 215, 0, 0.5), 0 0 60px rgba(255, 215, 0, 0.3);
+            border: 4px solid #8B7355;
+            box-shadow: 0 0 30px rgba(139, 115, 85, 0.3), 0 0 60px rgba(139, 115, 85, 0.2);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-            background: linear-gradient(135deg, rgba(90, 24, 154, 0.8) 0%, rgba(36, 0, 70, 0.8) 100%);
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.8) 100%);
             padding: 15px;
         }
         
         #sortingHat:hover {
             transform: scale(1.05);
-            box-shadow: 0 0 40px rgba(255, 215, 0, 0.7), 0 0 80px rgba(255, 215, 0, 0.5);
+            box-shadow: 0 0 40px rgba(139, 115, 85, 0.5), 0 0 80px rgba(139, 115, 85, 0.3);
         }
         
         /* 引导文字 */
@@ -366,15 +434,15 @@
 </head>
 <body>
     <div class="container">
-        <h1>霍格沃茨</h1>
-        <h2>分院帽测试</h2>
+        <h1>Hogwarts</h1>
+        <h2>Sorting Hat Test</h2>
         
         <div class="welcome-text">
-            踏上魔法之旅，发现你真正的归属。分院帽将根据你的性格特质，为你选择最适合的霍格沃茨学院。
+            Embark on your magical journey and discover where you truly belong. The Sorting Hat will choose the perfect Hogwarts house for you based on your personality traits.
         </div>
         
         <div class="hat-container">
-            <img id="sortingHat" src="https://www.pngplay.com/wp-content/uploads/5/Harry-Potter-Sorting-Hat-PNG-Picture.png" alt="分院帽">
+            <img id="sortingHat" src="cap.PNG" alt="分院帽">
         </div>
         
         <div class="progress-area">
@@ -396,6 +464,89 @@
             <button id="restartBtn">重新测试</button>
         </div>
     </div>
+    
+    <!-- 星空和星座JavaScript -->
+    <script>
+        // 生成星空背景
+        function createStars() {
+            const container = document.createElement('div');
+            container.className = 'stars-container';
+            document.body.appendChild(container);
+            
+            const starCount = 150;
+            
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                
+                // 随机位置
+                const x = Math.random() * window.innerWidth;
+                const y = Math.random() * window.innerHeight;
+                
+                // 随机大小
+                const size = Math.random() * 3 + 1;
+                
+                // 随机颜色
+                if (Math.random() > 0.7) {
+                    star.classList.add('purple');
+                }
+                
+                star.style.left = x + 'px';
+                star.style.top = y + 'px';
+                star.style.width = size + 'px';
+                star.style.height = size + 'px';
+                
+                // 随机动画延迟
+                star.style.animationDelay = Math.random() * 3 + 's';
+                
+                container.appendChild(star);
+            }
+        }
+        
+        // 创建鼠标跟随的星座效果
+        function createMouseConstellation() {
+            document.addEventListener('mousemove', function(e) {
+                const mouseX = e.clientX;
+                const mouseY = e.clientY;
+                
+                // 创建鼠标跟随的星星
+                const mouseStar = document.createElement('div');
+                mouseStar.className = 'mouse-star';
+                mouseStar.style.left = mouseX + 'px';
+                mouseStar.style.top = mouseY + 'px';
+                document.body.appendChild(mouseStar);
+                
+                // 随机方向和距离
+                const angle = Math.random() * Math.PI * 2;
+                const distance = Math.random() * 30 + 10;
+                
+                // 计算终点位置
+                const endX = mouseX + Math.cos(angle) * distance;
+                const endY = mouseY + Math.sin(angle) * distance;
+                
+                // 创建连线效果
+                const line = document.createElement('div');
+                line.className = 'constellation-line';
+                line.style.left = mouseX + 'px';
+                line.style.top = mouseY + 'px';
+                line.style.width = distance + 'px';
+                line.style.transform = `rotate(${angle}rad)`;
+                document.body.appendChild(line);
+                
+                // 移除临时元素
+                setTimeout(() => {
+                    mouseStar.remove();
+                    line.remove();
+                }, 1000);
+            });
+        }
+        
+        // 页面加载完成后创建星空
+        window.addEventListener('DOMContentLoaded', function() {
+            createStars();
+            createMouseConstellation();
+        });
+    </script>
     
     <script>
         // 问题数据

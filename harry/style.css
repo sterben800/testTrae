@@ -1,0 +1,748 @@
+/* 全局样式 */
+body {
+    font-family: 'Georgia', serif;
+    margin: 0;
+    padding: 0;
+    background: radial-gradient(ellipse at center, #0b0b2b 0%, #000000 100%);
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: #f0f0f0;
+    position: relative;
+    overflow-x: hidden;
+    cursor: pointer;
+}
+
+/* 星空背景容器 */
+.stars-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+/* 星星样式 */
+.star {
+    position: absolute;
+    background-color: white;
+    border-radius: 50%;
+    animation: twinkle-white 3s infinite alternate;
+}
+
+/* 蓝色星星 */
+.star.blue {
+    background-color: #60a5fa;
+    box-shadow: 0 0 12px #60a5fa;
+    animation: twinkle-blue-purple 3s infinite alternate;
+}
+
+/* 紫色星星 */
+.star.purple {
+    background-color: #9d4edd;
+    box-shadow: 0 0 12px #9d4edd;
+    animation: twinkle-blue-purple 3s infinite alternate;
+}
+
+/* 蓝紫色星星闪烁动画 - 初始亮度80% */
+@keyframes twinkle-blue-purple {
+    0% { opacity: 0.8; }
+    100% { opacity: 1; }
+}
+
+/* 白色星星闪烁动画 - 透明度在40%到70%之间 */
+@keyframes twinkle-white {
+    0% { opacity: 0.4; }
+    100% { opacity: 0.7; }
+}
+
+/* 星星圆形轨道运动动画 */
+@keyframes orbit {
+    0% { transform: rotate(0deg) translateX(50px) rotate(0deg); }
+    100% { transform: rotate(360deg) translateX(50px) rotate(-360deg); }
+}
+
+/* 星座连线 */
+.constellation {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.constellation-line {
+    position: absolute;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0) 100%);
+    opacity: 0.5;
+    transform-origin: left center;
+}
+
+/* 鼠标跟随的拖尾粒子 */
+.mouse-trail {
+    position: fixed;
+    pointer-events: none;
+    z-index: 100;
+}
+
+.trail-particle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background-color: #6366f1;
+    border-radius: 50%;
+    opacity: 0.8;
+    box-shadow: 0 0 10px rgba(99, 102, 241, 0.8);
+    animation: trailParticleFade 1.5s ease-out forwards;
+}
+
+@keyframes trailParticleFade {
+    0% { 
+        opacity: 0.8; 
+        transform: scale(1); 
+        background-color: #6366f1;
+        box-shadow: 0 0 15px rgba(99, 102, 241, 0.9);
+    }
+    50% { 
+        opacity: 0.4; 
+        transform: scale(1.2); 
+        background-color: #8b5cf6;
+        box-shadow: 0 0 20px rgba(139, 92, 246, 0.7);
+    }
+    100% { 
+        opacity: 0; 
+        transform: scale(0); 
+        background-color: #ec4899;
+        box-shadow: 0 0 5px rgba(236, 72, 153, 0.3);
+    }
+}
+
+/* 容器 */
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+}
+
+/* Harry Potter标题样式 */
+.harry-potter-title {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+h1 {
+    text-align: center;
+    color: #8B7355;
+    font-size: 3.8em;
+    margin-bottom: 5px;
+    text-shadow: 
+        0 0 3px rgba(255, 255, 255, 0.5),
+        0 0 6px rgba(255, 215, 0, 0.3),
+        0 0 9px rgba(255, 215, 0, 0.2);
+    letter-spacing: 8px;
+    font-weight: bold;
+    font-family: 'Cinzel', 'Georgia', serif;
+    text-transform: uppercase;
+    position: relative;
+    z-index: 1;
+    background: linear-gradient(145deg, #8B7355, #A08B6F, #8B7355);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    -webkit-text-stroke: 1px rgba(255, 215, 0, 0.2);
+    text-stroke: 1px rgba(255, 215, 0, 0.2);
+}
+
+h2 {
+    text-align: center;
+    color: #ffffff;
+    font-size: 1.5em;
+    margin-bottom: 20px;
+    font-weight: normal;
+    font-family: 'Cinzel', 'Georgia', serif;
+    letter-spacing: 4px;
+    text-shadow: 
+        0 0 5px rgba(255, 255, 255, 0.8),
+        0 0 10px rgba(255, 215, 0, 0.4),
+        0 0 15px rgba(255, 215, 0, 0.2);
+    position: relative;
+    z-index: 1;
+    opacity: 0.9;
+}
+
+/* 帽子图片 */
+.hat-container {
+    text-align: center;
+    margin: 40px 0;
+    position: relative;
+    display: inline-block;
+}
+
+/* 波纹容器，用于生成多个波纹 */
+.ripple-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+/* 波纹元素 */
+.ripple {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border-radius: 50%;
+    border: 2px solid rgba(139, 115, 85, 0.5);
+    transform: translate(-50%, -50%) scale(0);
+    animation: ripple 3s infinite ease-out;
+    pointer-events: none;
+}
+
+/* 不同波纹的样式和动画延迟 */
+.ripple:nth-child(1) {
+    width: 250px;
+    height: 250px;
+    animation-delay: 0s;
+    border-color: rgba(139, 115, 85, 0.6);
+}
+
+.ripple:nth-child(2) {
+    width: 300px;
+    height: 300px;
+    animation-delay: 1s;
+    animation-duration: 4s;
+    border-color: rgba(139, 115, 85, 0.4);
+}
+
+.ripple:nth-child(3) {
+    width: 350px;
+    height: 350px;
+    animation-delay: 2s;
+    animation-duration: 5s;
+    border-color: rgba(139, 115, 85, 0.2);
+}
+
+/* 随机形状的波纹动画 */
+@keyframes ripple {
+    0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 0.8;
+        border-radius: 50%;
+    }
+    25% {
+        border-radius: 40% 60% 60% 40% / 40% 40% 60% 60%;
+    }
+    50% {
+        opacity: 0.5;
+        border-radius: 45% 55% 60% 40% / 55% 45% 55% 45%;
+    }
+    75% {
+        border-radius: 55% 45% 40% 60% / 60% 55% 45% 40%;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1.5);
+        opacity: 0;
+        border-radius: 50%;
+    }
+}
+
+/* 为了避免波纹覆盖帽子图标，调整z-index */
+#sortingHat {
+    position: relative;
+    z-index: 1;
+}
+
+/* 透明渐变边框通用样式 */
+.gradient-border {
+    position: relative;
+    border-radius: 50%;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.8);
+}
+
+.gradient-border::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 50%;
+    padding: 4px;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.8), rgba(139, 92, 246, 0.8));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    z-index: -1;
+}
+
+/* 方形透明渐变边框 */
+.gradient-border-square {
+    position: relative;
+    border-radius: 15px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+}
+
+.gradient-border-square::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 15px;
+    padding: 2px;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.8), rgba(139, 92, 246, 0.8));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    z-index: -1;
+}
+
+/* 选项容器透明渐变边框 */
+.gradient-border-option {
+    position: relative;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.gradient-border-option::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 10px;
+    padding: 2px;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.8), rgba(139, 92, 246, 0.8));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    z-index: -1;
+}
+
+/* 单选按钮透明渐变边框 */
+.gradient-border-radio {
+    position: relative;
+    border-radius: 50%;
+    background: transparent;
+}
+
+.gradient-border-radio::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 50%;
+    padding: 2px;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.8), rgba(139, 92, 246, 0.8));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    z-index: -1;
+}
+
+/* 进度条透明渐变边框 */
+.gradient-border-progress {
+    position: relative;
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.gradient-border-progress::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 4px;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.8), rgba(139, 92, 246, 0.8));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    z-index: -1;
+}
+
+#sortingHat {
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    border: 4px solid #8B7355; /* 暗沉的金色边框 */
+    box-shadow: 0 0 30px rgba(139, 115, 85, 0.3), 0 0 60px rgba(139, 115, 85, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.5s ease;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.8) 100%);
+    padding: 15px;
+    /* 处理可能的白色边框，使其逐渐透明 */
+    image-rendering: optimizeQuality;
+    filter: drop-shadow(0 0 10px rgba(139, 115, 85, 0.5)) brightness(0.95) sepia(0.3);
+}
+
+#sortingHat:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 40px rgba(139, 115, 85, 0.5), 0 0 80px rgba(139, 115, 85, 0.3);
+}
+
+/* 应用半透明白色背景到各个元素 */
+.question-area,
+.result-area {
+    border: none !important;
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.question-area::before,
+.result-area::before {
+    display: none;
+}
+
+/* 选项容器透明背景 */
+.option-container {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(99, 102, 241, 0.5);
+}
+
+.option-container::before {
+    display: none;
+}
+
+.option-container.selected::before {
+    display: none;
+}
+
+/* 选中状态的选项 - 蓝紫渐变带透明 */
+.option-container.selected {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(139, 92, 246, 0.3));
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+    border-color: rgba(139, 92, 246, 0.8);
+}
+
+/* 选项悬浮状态 - 蓝紫渐变带透明 */
+.option-container:hover {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2));
+    border-color: rgba(99, 102, 241, 0.7);
+}
+
+/* 进度条样式 - 图片最上方风格 */
+.progress-bar {
+    /* 进度条容器 - 半透明背景，细边框 */
+    width: 100%;
+    height: 8px;
+    background-color: rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+    border: none;
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
+    padding: 1px;
+    background-clip: padding-box;
+}
+
+.progress-bar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 4px;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.8), rgba(139, 92, 246, 0.8));
+    z-index: -1;
+}
+
+#progressFill {
+    /* 进度填充 - 蓝紫色渐变，柔和发光 */
+    height: 100%;
+    background: linear-gradient(90deg, rgba(99, 102, 241, 0.8), rgba(139, 92, 246, 0.8));
+    width: 0%;
+    transition: width 0.5s ease;
+    box-shadow: 0 0 8px rgba(99, 102, 241, 0.5), 0 0 12px rgba(139, 92, 246, 0.3);
+    border-radius: 3px;
+}
+
+/* 引导文字 */
+.intro-text {
+    font-size: 1.1em;
+    color: #e0e0e0;
+    margin-bottom: 40px;
+    line-height: 1.6;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* 问题区域 */
+.question-area {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+    border: 2px solid rgba(99, 102, 241, 0.5);
+    border-radius: 15px;
+    padding: 30px;
+    margin-bottom: 30px;
+    backdrop-filter: blur(15px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+#questionText {
+    font-size: 1.4em;
+    margin-bottom: 30px;
+    text-align: center;
+    color: #f0f0f0;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* 选项区域 */
+.options-area {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+/* 选项容器 */
+.option-container {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(99, 102, 241, 0.5);
+    border-radius: 10px;
+    padding: 18px 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+/* 选中状态的选项 */
+.option-container.selected {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(139, 92, 246, 0.3));
+    border-color: rgba(139, 92, 246, 0.8);
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+    transform: translateY(-2px);
+}
+
+.option-container:hover {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2));
+    border-color: rgba(99, 102, 241, 0.7);
+    transform: translateY(-2px);
+}
+
+/* 选项文本 */
+.option-text {
+    font-size: 1.1em;
+    color: white;
+    font-family: 'Georgia', serif;
+    transition: all 0.3s ease;
+}
+
+/* 鼠标停留时的选项文本 - 保持白色 */
+.option-container:hover .option-text {
+    color: white;
+    text-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+}
+
+/* 选中状态的选项文本 - 保持白色 */
+.option-container.selected .option-text {
+    color: white;
+    text-shadow: 0 0 15px rgba(99, 102, 241, 0.8);
+}
+
+/* 统一按钮样式 - 蓝紫色渐变，带透明效果 */
+button {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.8), rgba(139, 92, 246, 0.8));
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    width: 200px;
+    margin: 0;
+    display: inline-block;
+    border: 1px solid rgba(99, 102, 241, 0.6);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: white;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Georgia', serif;
+    border-radius: 30px;
+    padding: 15px 20px;
+}
+
+/* 确保#restartBtn使用统一样式 */
+#restartBtn {
+    all: unset;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.8), rgba(139, 92, 246, 0.8));
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    width: auto;
+    margin: 0 auto;
+    display: block;
+    border: 1px solid rgba(99, 102, 241, 0.6);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: white;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Georgia', serif;
+    border-radius: 30px;
+    padding: 15px 20px;
+}
+
+button:hover, #restartBtn:hover {
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
+    transform: translateY(-2px);
+}
+
+button:disabled, #restartBtn:disabled {
+    background: rgba(99, 102, 241, 0.3);
+    color: rgba(255, 255, 255, 0.5);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+button:active, #restartBtn:active {
+    transform: translateY(-1px);
+}
+
+.option-radio {
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    background: transparent;
+    transition: none; /* 禁用过渡效果，保持背景不变 */
+}
+
+/* 确保鼠标悬浮时勾选框背景不变 */
+.option-container:hover .option-radio {
+    background: transparent !important;
+    border-color: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* 确保选中状态时勾选框背景不变 */
+.option-container.selected .option-radio {
+    background: transparent !important;
+    border-color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.option-radio::before {
+    display: none;
+}
+
+.option-container.selected .option-radio::after {
+    background: white;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+}
+
+/* 进度区域 */
+.progress-area {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+#progressText {
+    font-size: 1.2em;
+    color: #6366f1;
+    margin-bottom: 15px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* 结果区域 */
+.result-area {
+    display: none;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+    border: 2px solid rgba(99, 102, 241, 0.5);
+    border-radius: 15px;
+    padding: 40px;
+    text-align: center;
+    backdrop-filter: blur(15px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    margin-top: 40px;
+}
+
+.result-area h2 {
+    color: #FFD700;
+    font-size: 1.8em;
+    margin-bottom: 30px;
+}
+
+#houseResult {
+    font-size: 2.5em;
+    font-weight: bold;
+    margin-bottom: 25px;
+}
+
+#houseDescription {
+    font-size: 1.3em;
+    margin-bottom: 35px;
+    line-height: 1.6;
+    color: #e0e0e0;
+}
+
+/* 学院颜色 */
+.gryffindor {
+    color: #ae0001;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3), 0 0 20px rgba(174, 0, 26, 0.5);
+}
+
+.hufflepuff {
+    color: #ffdb00;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3), 0 0 20px rgba(255, 219, 0, 0.5);
+}
+
+.ravenclaw {
+    color: #000080;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3), 0 0 20px rgba(0, 0, 128, 0.5);
+}
+
+.slytherin {
+    color: #2a623d;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3), 0 0 20px rgba(42, 98, 61, 0.5);
+}
+
+/* 欢迎文字 */
+.welcome-text {
+    font-size: 1.2em;
+    color: #e0e0e0;
+    margin: 30px 0;
+    line-height: 1.6;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+    
+    h1 {
+        font-size: 2.2em;
+    }
+    
+    #sortingHat {
+        width: 180px;
+        height: 180px;
+    }
+    
+    .options-area {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .question-area,
+    .result-area {
+        padding: 25px;
+    }
+}
